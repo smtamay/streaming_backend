@@ -5,11 +5,11 @@ defmodule StreamingBackendWeb.Schema.Schema do
   import_types StreamingBackendWeb.Context.User.Queries
 
   query do
-   import_fields :hello
+   import_fields :user_queries
   end
 
 
   mutation do
-   import_fields :signup
+   import_fields :user_mutations
   end
 end
