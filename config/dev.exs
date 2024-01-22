@@ -1,5 +1,10 @@
 import Config
 
+config :cors_plug,
+  origin: ["http://localhost:3000"],
+  max_age: 86400,
+  methods: ["GET", "POST"]
+
 # Configure your database
 config :streaming_backend, StreamingBackend.Repo,
   username: "postgres",
@@ -80,3 +85,5 @@ config :phoenix_live_view, :debug_heex_annotations, true
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :streaming_backend, env: :dev

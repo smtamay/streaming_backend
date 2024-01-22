@@ -1,6 +1,10 @@
 defmodule StreamingBackendWeb.Router do
   use StreamingBackendWeb, :router
 
+  import StreamingBackendWeb.UserAuth
+
+  @is_dev_env Application.compile_env(:streaming_backend, :env) == :dev
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,17 +12,22 @@ defmodule StreamingBackendWeb.Router do
     plug :put_root_layout, html: {StreamingBackendWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug StreamingBackendWeb.Plugs.SetCurrentUser
   end
 
-  scope "/", StreamingBackendWeb do
-    pipe_through :browser
+  scope "/" do
+    pipe_through :api
 
-    get "/", PageController, :home
-  end
+    forward "/api", Absinthe.Plug,
+     schema: StreamingBackendWeb.Schema.Schema
+
+
+ end
 
   # Other scopes may use custom stacks.
   # scope "/api", StreamingBackendWeb do
@@ -34,11 +43,13 @@ defmodule StreamingBackendWeb.Router do
     # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
-    scope "/dev" do
-      pipe_through :browser
+  scope "/" do
+    pipe_through :api
 
-      live_dashboard "/dashboard", metrics: StreamingBackendWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
-    end
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+    schema: StreamingBackendWeb.Schema.Schema
+
   end
+end
+
 end
