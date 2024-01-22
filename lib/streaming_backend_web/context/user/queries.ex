@@ -1,12 +1,11 @@
 defmodule StreamingBackendWeb.Context.User.Queries do
+  alias StreamingBackendWeb.Resolvers.UserResolver
   use Absinthe.Schema.Notation
 
-  object :hello do
-    @desc "Hello world"
-    field :hello, :string do
-      resolve(fn _, _ ->
-        {:ok, "Hola, mundo!"}
-      end)
+  object :user_queries do
+    @desc "Get current user"
+    field :me, :user do
+      resolve(&UserResolver.me/3)
     end
   end
 end
