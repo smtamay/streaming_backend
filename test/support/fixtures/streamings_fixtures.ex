@@ -17,4 +17,21 @@ defmodule StreamingBackend.StreamingsFixtures do
 
     streaming_plataform
   end
+
+  @doc """
+  Generate a streaming_account.
+  """
+  def streaming_account_fixture(attrs \\ %{}) do
+    {:ok, streaming_account} =
+      attrs
+      |> Enum.into(%{
+        email: "some email",
+        password: "some password",
+        payment_date: ~D[2024-01-22],
+        price: 120.5
+      })
+      |> StreamingBackend.Streamings.create_streaming_account()
+
+    streaming_account
+  end
 end

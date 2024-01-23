@@ -101,4 +101,101 @@ defmodule StreamingBackend.Streamings do
   def change_streaming_plataform(%StreamingPlataform{} = streaming_plataform, attrs \\ %{}) do
     StreamingPlataform.changeset(streaming_plataform, attrs)
   end
+
+  alias StreamingBackend.Streamings.StreamingAccount
+
+  @doc """
+  Returns the list of streaming_accounts.
+
+  ## Examples
+
+      iex> list_streaming_accounts()
+      [%StreamingAccount{}, ...]
+
+  """
+  def list_streaming_accounts do
+    Repo.all(StreamingAccount)
+  end
+
+  @doc """
+  Gets a single streaming_account.
+
+  Raises `Ecto.NoResultsError` if the Streaming account does not exist.
+
+  ## Examples
+
+      iex> get_streaming_account!(123)
+      %StreamingAccount{}
+
+      iex> get_streaming_account!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_streaming_account!(id), do: Repo.get!(StreamingAccount, id)
+
+  @doc """
+  Creates a streaming_account.
+
+  ## Examples
+
+      iex> create_streaming_account(%{field: value})
+      {:ok, %StreamingAccount{}}
+
+      iex> create_streaming_account(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_streaming_account(%StreamingPlataform{} = streaming_plataform, attrs \\ %{}) do
+    %StreamingAccount{}
+    |> StreamingAccount.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:streaming_plataform, streaming_plataform)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a streaming_account.
+
+  ## Examples
+
+      iex> update_streaming_account(streaming_account, %{field: new_value})
+      {:ok, %StreamingAccount{}}
+
+      iex> update_streaming_account(streaming_account, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_streaming_account(%StreamingAccount{} = streaming_account, attrs) do
+    streaming_account
+    |> StreamingAccount.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a streaming_account.
+
+  ## Examples
+
+      iex> delete_streaming_account(streaming_account)
+      {:ok, %StreamingAccount{}}
+
+      iex> delete_streaming_account(streaming_account)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_streaming_account(%StreamingAccount{} = streaming_account) do
+    Repo.delete(streaming_account)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking streaming_account changes.
+
+  ## Examples
+
+      iex> change_streaming_account(streaming_account)
+      %Ecto.Changeset{data: %StreamingAccount{}}
+
+  """
+  def change_streaming_account(%StreamingAccount{} = streaming_account, attrs \\ %{}) do
+    StreamingAccount.changeset(streaming_account, attrs)
+  end
 end
