@@ -49,9 +49,9 @@ defmodule StreamingBackend.Streamings do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_streaming_plataform(attrs \\ %{}) do
+  def create_streaming_plataform(name \\ %{}) do
     %StreamingPlataform{}
-    |> StreamingPlataform.changeset(attrs)
+    |> StreamingPlataform.changeset(%{name: name})
     |> Repo.insert()
   end
 
