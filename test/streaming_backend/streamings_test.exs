@@ -116,4 +116,68 @@ defmodule StreamingBackend.StreamingsTest do
       assert %Ecto.Changeset{} = Streamings.change_streaming_account(streaming_account)
     end
   end
+
+  describe "user_subscription_infos" do
+    alias StreamingBackend.Streamings.UserSubscriptionInfo
+
+    import StreamingBackend.StreamingsFixtures
+
+    @invalid_attrs %{name: nil, status: nil, price: nil, start_date: nil, end_date: nil, payment_date: nil}
+
+    test "list_user_subscription_infos/0 returns all user_subscription_infos" do
+      user_subscription_info = user_subscription_info_fixture()
+      assert Streamings.list_user_subscription_infos() == [user_subscription_info]
+    end
+
+    test "get_user_subscription_info!/1 returns the user_subscription_info with given id" do
+      user_subscription_info = user_subscription_info_fixture()
+      assert Streamings.get_user_subscription_info!(user_subscription_info.id) == user_subscription_info
+    end
+
+    test "create_user_subscription_info/1 with valid data creates a user_subscription_info" do
+      valid_attrs = %{name: "some name", status: "some status", price: 120.5, start_date: ~D[2024-02-02], end_date: ~D[2024-02-02], payment_date: ~D[2024-02-02]}
+
+      assert {:ok, %UserSubscriptionInfo{} = user_subscription_info} = Streamings.create_user_subscription_info(valid_attrs)
+      assert user_subscription_info.name == "some name"
+      assert user_subscription_info.status == "some status"
+      assert user_subscription_info.price == 120.5
+      assert user_subscription_info.start_date == ~D[2024-02-02]
+      assert user_subscription_info.end_date == ~D[2024-02-02]
+      assert user_subscription_info.payment_date == ~D[2024-02-02]
+    end
+
+    test "create_user_subscription_info/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Streamings.create_user_subscription_info(@invalid_attrs)
+    end
+
+    test "update_user_subscription_info/2 with valid data updates the user_subscription_info" do
+      user_subscription_info = user_subscription_info_fixture()
+      update_attrs = %{name: "some updated name", status: "some updated status", price: 456.7, start_date: ~D[2024-02-03], end_date: ~D[2024-02-03], payment_date: ~D[2024-02-03]}
+
+      assert {:ok, %UserSubscriptionInfo{} = user_subscription_info} = Streamings.update_user_subscription_info(user_subscription_info, update_attrs)
+      assert user_subscription_info.name == "some updated name"
+      assert user_subscription_info.status == "some updated status"
+      assert user_subscription_info.price == 456.7
+      assert user_subscription_info.start_date == ~D[2024-02-03]
+      assert user_subscription_info.end_date == ~D[2024-02-03]
+      assert user_subscription_info.payment_date == ~D[2024-02-03]
+    end
+
+    test "update_user_subscription_info/2 with invalid data returns error changeset" do
+      user_subscription_info = user_subscription_info_fixture()
+      assert {:error, %Ecto.Changeset{}} = Streamings.update_user_subscription_info(user_subscription_info, @invalid_attrs)
+      assert user_subscription_info == Streamings.get_user_subscription_info!(user_subscription_info.id)
+    end
+
+    test "delete_user_subscription_info/1 deletes the user_subscription_info" do
+      user_subscription_info = user_subscription_info_fixture()
+      assert {:ok, %UserSubscriptionInfo{}} = Streamings.delete_user_subscription_info(user_subscription_info)
+      assert_raise Ecto.NoResultsError, fn -> Streamings.get_user_subscription_info!(user_subscription_info.id) end
+    end
+
+    test "change_user_subscription_info/1 returns a user_subscription_info changeset" do
+      user_subscription_info = user_subscription_info_fixture()
+      assert %Ecto.Changeset{} = Streamings.change_user_subscription_info(user_subscription_info)
+    end
+  end
 end

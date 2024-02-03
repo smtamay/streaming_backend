@@ -34,4 +34,23 @@ defmodule StreamingBackend.StreamingsFixtures do
 
     streaming_account
   end
+
+  @doc """
+  Generate a user_subscription_info.
+  """
+  def user_subscription_info_fixture(attrs \\ %{}) do
+    {:ok, user_subscription_info} =
+      attrs
+      |> Enum.into(%{
+        end_date: ~D[2024-02-02],
+        name: "some name",
+        payment_date: ~D[2024-02-02],
+        price: 120.5,
+        start_date: ~D[2024-02-02],
+        status: "some status"
+      })
+      |> StreamingBackend.Streamings.create_user_subscription_info()
+
+    user_subscription_info
+  end
 end
