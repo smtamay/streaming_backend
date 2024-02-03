@@ -13,6 +13,15 @@ defmodule StreamingBackendWeb.Context.StreamingAccount.Types do
     field :updated_at, :string
   end
 
+  object :streaming_account_info do
+    field :id, :id
+    field :streaming_plataform, :string
+    field :price, :float
+    field :email, :string
+    field :password, :string
+    field :payment_date, :string
+  end
+
   @desc "The streaming_account for create new account"
   input_object :streaming_account_input do
     field :price, :float
