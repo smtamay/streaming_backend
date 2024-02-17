@@ -7,6 +7,7 @@ defmodule StreamingBackend.Streamings do
   alias StreamingBackend.Repo
 
   alias StreamingBackend.Streamings.StreamingPlataform
+  alias StreamingBackend.Accounts
 
   @doc """
   Returns the list of streaming_plataforms.
@@ -117,6 +118,21 @@ defmodule StreamingBackend.Streamings do
     Repo.all(StreamingAccount)
   end
 
+  def get_all_streaming_accounts do
+    StreamingAccount
+    |> join(:inner, [sa], sp in assoc(sa, :streaming_plataform))
+    |> select([sa, sp], %{
+      id: sa.id,
+      price: sa.price,
+      email: sa.email,
+      password: sa.password,
+      payment_date: sa.payment_date,
+      streaming_plataform: sp.name
+    })
+    |> Repo.all()
+  end
+
+
   @doc """
   Gets a single streaming_account.
 
@@ -197,5 +213,122 @@ defmodule StreamingBackend.Streamings do
   """
   def change_streaming_account(%StreamingAccount{} = streaming_account, attrs \\ %{}) do
     StreamingAccount.changeset(streaming_account, attrs)
+  end
+
+  alias StreamingBackend.Streamings.UserSubscriptionInfo
+
+  @doc """
+  Returns the list of user_subscription_infos.
+
+  ## Examples
+
+      iex> list_user_subscription_infos()
+      [%UserSubscriptionInfo{}, ...]
+
+  """
+  def list_user_subscription_infos do
+    Repo.all(UserSubscriptionInfo)
+  end
+
+  @doc """
+  Gets a single user_subscription_info.
+
+  Raises `Ecto.NoResultsError` if the User subscription info does not exist.
+
+  ## Examples
+
+      iex> get_user_subscription_info!(123)
+      %UserSubscriptionInfo{}
+
+      iex> get_user_subscription_info!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_subscription_info!(id), do: Repo.get!(UserSubscriptionInfo, id)
+
+  def get_all_user_subscription_infos do
+    UserSubscriptionInfo
+    |> join(:inner, [usi], u in assoc(usi, :user))
+    |> join(:inner, [usi, u], sa in assoc(usi, :streaming_account))
+    |> join(:inner, [usi, u, sa], sp in assoc(sa, :streaming_plataform))
+    |> select([usi, u, sa, sp], %{
+      id: usi.id,
+      plataform: sp.name,
+      admin: u.username,  # Utiliza directamente la asociación :user
+      user: usi.name,
+      price: usi.price,
+      start_date: usi.start_date,
+      end_date: usi.end_date,
+      payment_date: usi.payment_date,
+      status: usi.status,
+    })
+    |> Repo.all()
+  end
+
+  @doc """
+  Creates a user_subscription_info.
+
+  ## Examples
+
+      iex> create_user_subscription_info(%{field: value})
+      {:ok, %UserSubscriptionInfo{}}
+
+      iex> create_user_subscription_info(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_user_subscription_info(%Accounts.User{} = user, %StreamingAccount{} = streaming_account, attrs \\ %{}) do
+    %UserSubscriptionInfo{}
+    |> UserSubscriptionInfo.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Ecto.Changeset.put_assoc(:streaming_account, streaming_account)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user_subscription_info.
+
+  ## Examples
+
+      iex> update_user_subscription_info(user_subscription_info, %{field: new_value})
+      {:ok, %UserSubscriptionInfo{}}
+
+      iex> update_user_subscription_info(user_subscription_info, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_subscription_info(%UserSubscriptionInfo{} = user_subscription_info, attrs) do
+    user_subscription_info
+    |> UserSubscriptionInfo.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a user_subscription_info.
+
+  ## Examples
+
+      iex> delete_user_subscription_info(user_subscription_info)
+      {:ok, %UserSubscriptionInfo{}}
+
+      iex> delete_user_subscription_info(user_subscription_info)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user_subscription_info(%UserSubscriptionInfo{} = user_subscription_info) do
+    Repo.delete(user_subscription_info)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user_subscription_info changes.
+
+  ## Examples
+
+      iex> change_user_subscription_info(user_subscription_info)
+      %Ecto.Changeset{data: %UserSubscriptionInfo{}}
+
+  """
+  def change_user_subscription_info(%UserSubscriptionInfo{} = user_subscription_info, attrs \\ %{}) do
+    UserSubscriptionInfo.changeset(user_subscription_info, attrs)
   end
 end
