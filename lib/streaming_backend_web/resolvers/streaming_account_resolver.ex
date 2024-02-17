@@ -3,7 +3,8 @@ defmodule StreamingBackendWeb.Resolvers.StreamingAccountResolver do
   alias StreamingBackendWeb.Schema.ChangesetErrors
 
   def get_list_streaming_accounts(_, _, _) do
-    {:ok, Streamings.list_streaming_accounts()}
+    streamings = Streamings.get_all_streaming_accounts()
+    {:ok, streamings}
   end
 
   def create_streaming_account(_, %{streaming_plataform_id: streaming_plataform_id, input: post_params}, _) do
